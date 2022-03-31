@@ -6,7 +6,7 @@
 /*   By: anelise <anelise@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 14:46:10 by coder             #+#    #+#             */
-/*   Updated: 2022/03/30 14:47:30 by anelise          ###   ########.fr       */
+/*   Updated: 2022/03/31 12:59:42 by anelise          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <stdio.h>
 
 // get line with the buffer return
-static char *get_buffer_return(char fd, char **line)
+static char *get_buffer_return(char fd, char *line)
 {
     char    *buffer;
     int     size;
@@ -23,18 +23,16 @@ static char *get_buffer_return(char fd, char **line)
     buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
     if (!buffer)
         return (NULL);
+    // printf("out of while >> %s <<\n" , buffer);
     size = read(fd, buffer, BUFFER_SIZE);
-    printf("out of while >> %s <<\n" , buffer);
-    while (!ft_strchr(buffer, '\n') || !ft_strchr(buffer, '\0'))
+    while (!ft_strchr(line, '\n') || !ft_strchr(line, '\0'))
     {
-        pos = ft_strchr(buffer, '\n');
-        if (pos)
-            *line = ft_strjoin(*line, pos);
-        printf("\n buf > %s", buffer);
-        printf("\n line > %s", buffer);
+        pos = line;
+        line = ft_strjoin(pos, buffer);
         size = read(fd, buffer, BUFFER_SIZE);
     }
-    return (*line);
+    printf("\n pos > %s", line);
+    return (line);
 }
 
 // save line
@@ -54,6 +52,8 @@ static char *save_line(char *line)
 }
 
 // update line
+
+
 char        *get_next_line(int fd)
 {
     static char	*line; // string buffer for the next function call
@@ -65,5 +65,6 @@ char        *get_next_line(int fd)
     if (!line)
         return (NULL);
     get_line = save_line(line);
-    return (get_line);
+    // printf("%d", get_line);
+    return (line);
 }
