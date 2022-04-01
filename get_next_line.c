@@ -6,65 +6,85 @@
 /*   By: anelise <anelise@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 14:46:10 by coder             #+#    #+#             */
-/*   Updated: 2022/03/31 12:59:42 by anelise          ###   ########.fr       */
+/*   Updated: 2022/03/31 22:19:44 by anelise          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 
-// get line with the buffer return
-static char *get_buffer_return(char fd, char *line)
+char            *get_buffer_return(int fd, char *line, char *buffer)
 {
-    char    *buffer;
-    int     size;
-    char    *pos;
+    int         size_read;
+    int         len;
+    char        *pos;
 
-    buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
-    if (!buffer)
-        return (NULL);
-    // printf("out of while >> %s <<\n" , buffer);
-    size = read(fd, buffer, BUFFER_SIZE);
-    while (!ft_strchr(line, '\n') || !ft_strchr(line, '\0'))
+    size_read = 1;
+    len = 0;
+    while (len == 0 && size_read != 0)
     {
+        size_read = read(fd, buffer, BUFFER_SIZE);
+        // printf("size_read :: %d\n", size_read);
+        if (size_read == -1)
+        {
+            free(buffer);
+            return (NULL);
+        }
+        buffer[size_read] = '\0';
+        if (!line)
+            line = ft_strdup("");
         pos = line;
         line = ft_strjoin(pos, buffer);
-        size = read(fd, buffer, BUFFER_SIZE);
+        // printf("line :: %s", line);
+        free(pos);
+        if (ft_strchr(line, '\n'))
+            len = 1;
     }
-    printf("\n pos > %s", line);
+    free(buffer);
     return (line);
 }
 
-// save line
-static char *save_line(char *line)
+static char     *save_line(char *tmp)
 {
-    size_t  size;
+    int         i;
+    char        *line;
     
-    if (line[0] == '\0')
+    i = 0;
+    while (tmp[i] && tmp[i] != '\0')
+        i++;
+    line = (char *) malloc(sizeof(char) * (i + 2));
+    if (!line)
         return (NULL);
-    if (ft_strchr(line, '\n'))
-    {
-        size = ft_strlen(line) - ft_strlen(ft_strchr(line, '\n') + 1);
-        return (ft_substr(line, 0, size));
-    }
-    else
-        return (ft_substr(line, 0, ft_strlen(line)));
+    printf("line :: %s", line);
+    return (line);
 }
 
-// update line
-
-
-char        *get_next_line(int fd)
+static char     *upgrade_tmp(char *tmp)
 {
-    static char	*line; // string buffer for the next function call
-    char		*get_line; // string to be returned at current function call
+    return (0);
+}
 
+char            *get_next_line(int fd)
+{
+    static char *line;
+    char        *buffer;
+    char		*get_line;
+    
+    
     if (fd < 0 || BUFFER_SIZE <= 0)
         return (NULL);
-    line = get_buffer_return(fd, &line);
+    buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
+    if (!buffer)
+    {
+        free(buffer);
+        return (NULL);
+    }
+    line = get_buffer_return(fd, line, buffer);
+    // printf("tmp :: %s", tmp);
     if (!line)
         return (NULL);
     get_line = save_line(line);
-    // printf("%d", get_line);
+    line = upgrade_tmp(line);
+    // printf("line :: %s", line);
     return (line);
 }
