@@ -1,4 +1,4 @@
-# Get Next Line
+# Get Next Line [![aestevam's 42 get_next_line Score](https://badge42.vercel.app/api/v2/cl1uxlt10005409kv2yyd62b7/project/2387360)](https://github.com/JaeSeoKim/badge42)
 
 <p align="center">
   <a aria-label="Completed" href="https://www.42sp.org.br/">
