@@ -15,53 +15,86 @@
 
 char            *get_buffer_return(int fd, char *line, char *buffer)
 {
-    int         size_read;
-    int         len;
-    char        *pos;
+    int         b_read;
+    int         find;
+    char        *temp;
 
-    size_read = 1;
-    len = 0;
-    while (len == 0 && size_read != 0)
+    b_read = 1;
+    find = 0;
+    while (find == 0 && b_read != 0)
     {
-        size_read = read(fd, buffer, BUFFER_SIZE);
-        // printf("size_read :: %d\n", size_read);
-        if (size_read == -1)
+        b_read = read(fd, buffer, BUFFER_SIZE);
+        // printf("buffer :: %s\n", buffer);
+        // printf("fd :: %d\n", fd);
+        // printf("line :: %s\n", line);
+        if (b_read == -1)
         {
             free(buffer);
             return (NULL);
         }
-        buffer[size_read] = '\0';
+        buffer[b_read] = '\0';
+        // printf("buffer :: %s\n", buffer);
+        // printf("line :: %s", line);
         if (!line)
             line = ft_strdup("");
-        pos = line;
-        line = ft_strjoin(pos, buffer);
+            // printf("line :: %s", line);
+        temp = line;
         // printf("line :: %s", line);
-        free(pos);
+        line = ft_strjoin(temp, buffer);
+        // printf("line :: %s", line);
+        // printf("temp :: %s", temp);
+        free(temp);
+        // printf("temp :: %s", temp);
         if (ft_strchr(line, '\n'))
-            len = 1;
+            find = 1;
+            // printf("line :: %s", line);
     }
     free(buffer);
     return (line);
 }
 
-static char     *save_line(char *tmp)
+static char     *save_line(char *temp)
 {
     int         i;
     char        *line;
     
     i = 0;
-    while (tmp[i] && tmp[i] != '\0')
+    while (temp[i] && temp[i] != '\0')
         i++;
     line = (char *) malloc(sizeof(char) * (i + 2));
+    // printf("line :: %s", line);
     if (!line)
         return (NULL);
-    printf("line :: %s", line);
+    ft_strlcpy(line, temp, i + 2);
+    if (line[0] == '\0') 
+    {
+        // printf("line :: %s", line);
+        free(line);
+        return (NULL);
+    }
+    // printf("line :: %s", line);
     return (line);
 }
 
-static char     *upgrade_tmp(char *tmp)
+static char     *upgrade_temp(char *temp)
 {
-    return (0);
+    int     i;
+    char    *new_temp;
+
+    i = 0;
+    while (temp[i] && temp[i] != '\n')
+        i++;
+    if  (temp[i] == '\0')
+    {
+        free(temp);
+        return (NULL);
+    }
+    new_temp = (char *) malloc(sizeof(char) * (ft_strlen(temp) - i + 1));
+    if (!new_temp)
+        return (NULL);
+    ft_strlcpy(new_temp, temp + i + 1, ft_strlen(temp) - i + 1);
+    free(temp);
+    return (new_temp);
 }
 
 char            *get_next_line(int fd)
@@ -70,7 +103,8 @@ char            *get_next_line(int fd)
     char        *buffer;
     char		*get_line;
     
-    
+    get_line = NULL;
+    // printf("fd :: %d\n", fd);
     if (fd < 0 || BUFFER_SIZE <= 0)
         return (NULL);
     buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
@@ -79,12 +113,16 @@ char            *get_next_line(int fd)
         free(buffer);
         return (NULL);
     }
+    // printf("line :: %s", line);
     line = get_buffer_return(fd, line, buffer);
-    // printf("tmp :: %s", tmp);
+    // printf("buffer :: %s", buffer);
+    // printf("line :: %s", line);
     if (!line)
         return (NULL);
     get_line = save_line(line);
-    line = upgrade_tmp(line);
+    printf("line :: %s", get_line);
+    line = upgrade_temp(line);
     // printf("line :: %s", line);
-    return (line);
+    // printf("line :: %s", get_line);
+    return (get_line);
 }
