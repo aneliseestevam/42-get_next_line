@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aestevam <aestevam@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: anelise <anelise@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/30 06:13:14 by aestevam          #+#    #+#             */
-/*   Updated: 2022/04/21 20:47:58 by aestevam         ###   ########.fr       */
+/*   Updated: 2022/03/30 14:12:09 by anelise          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,29 +30,6 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-int	ft_strlcpy(char *dest, char *src, int size)
-{
-	int	i;
-
-	i = 0;
-	if (size == 0)
-	{
-		while (src[i])
-			i++;
-		return (i);
-	}
-	while (i < size - 1 && src[i])
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	if (i < size)
-		dest[i] = '\0';
-	while (src[i] != '\0')
-		i++;
-	return (i);
-}
-
 size_t	ft_strlen(const char *str)
 {
 	size_t	i;
@@ -61,6 +38,22 @@ size_t	ft_strlen(const char *str)
 	while (str[i] != '\0')
 		i++;
 	return (i);
+}
+
+size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
+{
+	size_t	i;
+
+	i = 0;
+	if (dstsize == 0)
+		return (ft_strlen(src));
+	while (i < (dstsize - 1) && src[i])
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = 0;
+	return (ft_strlen(src));
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -90,18 +83,15 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 char	*ft_strdup(const char *s1)
 {
-	char	*s2;
-	int		i;
+	size_t	len;
+	char	*dup;
 
-	s2 = (char *) malloc(ft_strlen(s1) + 1);
-	if (!s2)
-		return (0);
-	i = 0;
-	while (s1[i] != 0)
+	len = ft_strlen(s1) + 1;
+	dup = (char *)malloc(sizeof(char) * len);
+	if (dup == NULL)
 	{
-		s2[i] = s1[i];
-		i++;
+		return (NULL);
 	}
-	s2[i] = '\0';
-	return (s2);
+	ft_strlcpy(dup, s1, len);
+	return (dup);
 }

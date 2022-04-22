@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aestevam <aestevam@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/15 11:48:54 by aestevam          #+#    #+#             */
-/*   Updated: 2022/04/22 08:41:29 by aestevam         ###   ########.fr       */
+/*   Updated: 2022/04/22 09:09:17 by aestevam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,10 @@ char            *get_next_line(int fd)
 {
     char        *buffer;
     char        *line;
-    static char *backup;
+    static char *backup[OPEN_MAX];
 
     line = NULL;
-    if (fd < 0 || BUFFER_SIZE <= 0)
+    if (fd < 0 || BUFFER_SIZE <= 0 || fd > OPEN_MAX)
         return (NULL);
     buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
     if (!buffer)
@@ -98,10 +98,10 @@ char            *get_next_line(int fd)
         free(buffer);
         return (NULL);
     }
-    backup = set_backup(fd, backup, buffer);
-    if (!backup)
+    backup[fd] = set_backup(fd, backup[fd], buffer);
+    if (!backup[fd])
         return (NULL);
-    line = save_line(backup);
-    backup = save_remains(backup);
+    line = save_line(backup[fd]);
+    backup[fd] = save_remains(backup[fd]);
     return (line);
 }

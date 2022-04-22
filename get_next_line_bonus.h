@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aestevam <aestevam@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/20 14:46:40 by coder             #+#    #+#             */
-/*   Updated: 2022/04/21 20:48:42 by aestevam         ###   ########.fr       */
+/*   Updated: 2022/04/22 09:07:10 by aestevam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@
 # include <stdbool.h>
 # include <limits.h>
 # include <sys/resource.h>
+
+# ifndef OPEN_MAX
+#  define OPEN_MAX 256
+# endif
 
 char	*ft_strchr(const char *s, int c);
 size_t	ft_strlen(const char *str);
